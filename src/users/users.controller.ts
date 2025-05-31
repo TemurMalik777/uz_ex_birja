@@ -37,7 +37,7 @@ export class UsersController {
     const user = await this.usersService.findUserByActivationLink(link);
 
     if (!user) {
-      throw new NotFoundException('Aktivatsiya linki noto‘g‘ri!');
+      throw new NotFoundException('Aktivatsiya linki notogri!');
     }
 
     user.is_active = true;

@@ -56,20 +56,25 @@ export class UsersService {
     return this.userRepo.find({});
   }
 
-  findByEmail(email: string) {
-    return this.userRepo.findOneBy({ email });
-  }
+  // findByEmail(email: string) {
+  //   return this.userRepo.findOneBy({ email });
+  // }
 
   findOne(id: number) {
     return this.userRepo.findOneBy({ id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepo.update(id, updateUserDto);
+    return this.userRepo.preload({id, ...updateUserDto});
   }
 
   remove(id: number) {
     return this.userRepo.delete(id);
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userRepo.findOne({ where: { email } });
+    return user;
   }
 
   async findUserByRefresh(refresh_token: string) {

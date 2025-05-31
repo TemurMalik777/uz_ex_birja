@@ -41,7 +41,7 @@ export class CreateAdminDto {
   confirm_password: string;
 
   @ApiProperty({
-    example: 'true',
+    nullable: true,
     description: 'Faqat "true" yoki "false" bo‘lishi mumkin',
   })
   @Field()
@@ -53,10 +53,10 @@ export class CreateAdminDto {
     example: 'false',
     description: 'Faqat "true" yoki "false" bo‘lishi mumkin',
   })
-  @Field()
+  @Field({ nullable: true })
   @IsNotEmpty()
   @IsBooleanString()
-  is_active: string;
+  is_active?: string;
 
   @ApiProperty({ example: null, required: false })
   @Field()

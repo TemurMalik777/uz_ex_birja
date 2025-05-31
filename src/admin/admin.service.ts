@@ -20,14 +20,19 @@ export class AdminService {
 
   async create(createAdminDto: CreateAdminDto) {
     const { password, confirm_password, ...otherDto } = createAdminDto;
+
     if (password !== confirm_password) {
       throw new BadRequestException('Password does not match!');
     }
+
     const hashed_password = await bcrypt.hash(password, 7);
+
     const newAdmin = await this.adminRepo.save({
       ...otherDto,
-      password: hashed_password,
+      hashed_password,
+      refresh_token: '',
     });
+
     return newAdmin;
   }
 
@@ -44,8 +49,12 @@ export class AdminService {
     return this.adminRepo.findOne({ where: { id } });
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return this.adminRepo.update(id, updateAdminDto);
+  async update(id: number, updateAdminDto: UpdateAdminDto) {
+    const adminUpdate = await this.adminRepo.preload({ id, ...updateAdminDto });
+    if (!adminUpdate) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
+    return this.adminRepo.save(adminUpdate);
   }
 
   remove(id: number) {
@@ -60,7 +69,6 @@ export class AdminService {
     return this.adminRepo.save(admin);
   }
 
-  
   async findByToken(refreshToken: string) {
     if (!refreshToken) {
       throw new NotFoundException('Refresh Token Not Found!');
@@ -80,7 +88,7 @@ export class AdminService {
     const admins = await this.adminRepo.find();
 
     for (const admin of admins) {
-      const match = await bcrypt.compare(refresh_token, admin.refresh_token);
+      const match = await bcrypt.compare(refresh_token, admin.refresh_token || '');
       if (match) return admin;
     }
 

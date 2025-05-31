@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { MailModule } from '../mail/mail.module';
 import { UsersResolver } from './users.resolver';
+import { Wallet } from '../wallets/entities/wallet.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), MailModule],
+  imports: [TypeOrmModule.forFeature([User, Wallet]), MailModule],
   controllers: [UsersController],
   providers: [UsersService, UsersResolver],
   exports: [UsersService],

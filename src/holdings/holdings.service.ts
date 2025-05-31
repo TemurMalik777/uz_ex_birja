@@ -17,7 +17,7 @@ export class HoldingsService {
   }
 
   findAll() {
-    return this.holdingRepo.find();
+    return this.holdingRepo.find({ relations: ['supplier', 'order_id'] });
   }
 
   findOne(id: number) {

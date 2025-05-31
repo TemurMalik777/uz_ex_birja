@@ -1,3 +1,4 @@
+import { Field, Int } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
@@ -10,7 +11,7 @@ export class CreateHoldingDto {
   @ApiProperty({ example: 456, description: 'Supplier ID' })
   @IsInt()
   @IsNotEmpty()
-  supplier_id: number;
+  supplier: number;
 
   @ApiProperty({ example: '15000', description: 'Amount' })
   @IsString()

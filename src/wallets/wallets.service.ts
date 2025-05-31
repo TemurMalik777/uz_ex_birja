@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wallet } from './entities/wallet.entity';
 import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WalletsService {
@@ -11,20 +12,35 @@ export class WalletsService {
     @InjectRepository(Wallet) private readonly walletRepo: Repository<Wallet>,
   ) {}
 
-  create(createWalletDto: CreateWalletDto) {
-    return this.walletRepo.save(createWalletDto);
+  async create(createWalletDto: CreateWalletDto, user: User) {
+    const newWallet = this.walletRepo.create({ ...createWalletDto, userId: user.id });
+    return await this.walletRepo.save(newWallet);
   }
 
   findAll() {
-    return this.walletRepo.find();
+    return this.walletRepo.find({relations: ["userId"]});
   }
 
   findOne(id: number) {
-    return this.walletRepo.findOneBy({ id });
+    return this.walletRepo.findOne({
+      where: { id },
+      relations: ["userId"],
+    });
   }
 
-  update(id: number, updateWalletDto: UpdateWalletDto) {
-    return this.walletRepo.preload({ id, ...updateWalletDto });
+  // async update(id: string, updateWalletDto: UpdateWalletDto) {
+  //   const wallet = await this.walletRepo.preload({ id: +id, ...updateWalletDto });
+  //   return wallet
+  // }
+
+  async update(id: number, updateWalletDto: UpdateWalletDto) {
+    const wallet = await this.walletRepo.preload({ id, ...updateWalletDto });
+
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with id ${id} not found`);
+    }
+
+    return await this.walletRepo.save(wallet);
   }
 
   remove(id: number) {

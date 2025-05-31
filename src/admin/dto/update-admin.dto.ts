@@ -38,13 +38,13 @@ export class UpdateAdminDto {
   @Field()
   @IsNotEmpty()
   @IsBooleanString()
-  is_creator: string;
+  is_creator?: string;
 
   @ApiProperty({ example: 'false' })
   @Field()
   @IsNotEmpty()
   @IsBooleanString()
-  is_active: string;
+  is_active?: string;
 
   @ApiProperty({ required: false })
   @Field({ nullable: true })

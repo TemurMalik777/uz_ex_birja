@@ -32,13 +32,13 @@ export class Admin {
 
   @ApiProperty({ example: 'true' })
   @Field()
-  @Column()
+  @Column({ default: false })
   is_creator: string;
 
-  @ApiProperty({ example: 'false' })
+  @ApiProperty()
   @Field()
-  @Column()
-  is_active: string;
+  @Column({ nullable: true })
+  is_active?: string;
 
   @ApiProperty({ example: 'some-refresh-token', required: false })
   @Field()

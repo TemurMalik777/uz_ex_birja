@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { HoldingsService } from './holdings.service';
 import { CreateHoldingDto } from './dto/create-holding.dto';
 import { UpdateHoldingDto } from './dto/update-holding.dto';
+import { User } from '../users/entities/user.entity';
 
 @Controller('holdings')
 export class HoldingsController {

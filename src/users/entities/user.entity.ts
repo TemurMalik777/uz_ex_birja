@@ -1,7 +1,16 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { Wallet } from '../../wallets/entities/wallet.entity';
+import { Holding } from '../../holdings/entities/holding.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -92,8 +101,15 @@ export class User {
   })
   active_link?: string;
 
-  // @BeforeInsert()
-  // generateActivationLink() {
-  //   this.active_link = uuidv4();
-  // }
+  @OneToMany((type) => Wallet, (wallet) => wallet.userId)
+  @Field((type) => [Wallet])
+  wallets: Wallet[];
+
+  @OneToMany((type) => Holding, (holding) => holding.supplier)
+  @Field((type) => [Holding])
+  holdings: Holding[];
+
+  @OneToMany((type)=>Order, (order)=>order.client_id)
+  @Field((type)=>[Order])
+  orders: Order[]
 }

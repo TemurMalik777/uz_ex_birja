@@ -6,11 +6,11 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { Admin } from 'typeorm';
 import { User } from './users/entities/user.entity';
-import { ComplaintsModule } from './complaints/complaints.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { HoldingsModule } from './holdings/holdings.module';
 import { OrderLogsModule } from './order_logs/order_logs.module';
 import { OrdersModule } from './orders/orders.module';
+import { ComplaintsModule } from './complaints/complaints.module';
 
 @Module({
   imports: [
@@ -33,11 +33,11 @@ import { OrdersModule } from './orders/orders.module';
     AdminModule,
     AuthModule,
     UsersModule,
-    ComplaintsModule,
     WalletsModule,
     HoldingsModule,
     OrderLogsModule,
     OrdersModule,
+    ComplaintsModule,
   ],
   controllers: [],
   providers: [],

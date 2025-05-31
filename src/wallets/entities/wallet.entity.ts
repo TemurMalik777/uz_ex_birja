@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
@@ -7,6 +14,8 @@ import {
   IsBoolean,
   IsPositive,
 } from 'class-validator';
+import { User } from '../../users/entities/user.entity';
+import { Field } from '@nestjs/graphql';
 
 @Entity('wallets')
 export class Wallet {
@@ -18,6 +27,8 @@ export class Wallet {
   @IsInt()
   @IsNotEmpty()
   @Column()
+  @ManyToOne((type) => User, (userId) => userId.wallets)
+  @Field((type) => Wallet)
   userId: number;
 
   @ApiProperty({ example: 100000, description: 'Hamyon balansi' })

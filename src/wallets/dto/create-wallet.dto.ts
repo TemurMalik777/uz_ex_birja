@@ -1,3 +1,4 @@
+import { Field, Int } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
@@ -11,7 +12,8 @@ export class CreateWalletDto {
   @ApiProperty({ example: 1, description: 'Foydalanuvchi ID si' })
   @IsInt()
   @IsNotEmpty()
-  userId: number;
+  @Field((type)=>Int, {nullable: true})
+  userId?: number;
 
   @ApiProperty({ example: 100000, description: 'Hamyon balansi' })
   @IsInt()

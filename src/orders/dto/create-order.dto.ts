@@ -5,6 +5,11 @@ export class CreateOrderDto {
   @ApiProperty({ example: 101, description: 'ID of the product being ordered' })
   @IsInt()
   @IsNotEmpty()
+  client_id;
+
+  @ApiProperty({ example: 101, description: 'ID of the product being ordered' })
+  @IsInt()
+  @IsNotEmpty()
   product_id: number;
 
   @ApiProperty({ example: 3, description: 'Quantity of the product ordered' })

@@ -1,6 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsString, IsNumberString } from 'class-validator';
+import { Holding } from '../../holdings/entities/holding.entity';
+import { Field } from '@nestjs/graphql';
+import { OrderLog } from '../../order_logs/entities/order_log.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Order {
@@ -13,6 +17,14 @@ export class Order {
   @IsNotEmpty()
   @Column()
   product_id: number;
+
+  @ManyToOne((type)=>User, (client_id)=>client_id.orders)
+  @Field((type)=>Order)
+  @ApiProperty()
+  @IsInt()
+  @IsNotEmpty()
+  @Column()
+  client_id: number;
 
   @ApiProperty({ example: 3, description: 'Quantity of the product ordered' })
   @IsInt()
@@ -34,4 +46,12 @@ export class Order {
   @IsNotEmpty()
   @Column()
   status: string;
+
+  @OneToMany((type) => Holding, (holdingorder) => holdingorder.order_id)
+  @Field((type) => [Holding])
+  holdingorders: Holding[];
+
+  @OneToMany((type) => OrderLog, (orderlog) => orderlog.orderasid)
+  @Field((type) => [OrderLog])
+  orderlogs: OrderLog[];
 }

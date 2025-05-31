@@ -17,7 +17,7 @@ export class OrderLogsService {
   }
 
   findAll() {
-    return this.orderLogRepo.find();
+    return this.orderLogRepo.find({ relations: ['orderasid'] });
   }
 
   findOne(id: number) {

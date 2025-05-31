@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
+import { User } from '../users/entities/user.entity';
 
 @Controller('wallets')
 export class WalletsController {
   constructor(private readonly walletsService: WalletsService) {}
 
   @Post()
-  create(@Body() createWalletDto: CreateWalletDto) {
-    return this.walletsService.create(createWalletDto);
+  create(@Body() createWalletDto: CreateWalletDto, userId: User) {
+    return this.walletsService.create(createWalletDto, userId);
   }
 
   @Get()
@@ -18,8 +19,8 @@ export class WalletsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.walletsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.walletsService.findOne(id);
   }
 
   @Patch(':id')
@@ -28,7 +29,7 @@ export class WalletsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.walletsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.walletsService.remove(id);
   }
 }

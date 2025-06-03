@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderLogDto } from './dto/create-order_log.dto';
 import { UpdateOrderLogDto } from './dto/update-order_log.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,8 +24,15 @@ export class OrderLogsService {
     return this.orderLogRepo.findOneBy({ id });
   }
 
-  update(id: number, updateOrderLogDto: UpdateOrderLogDto) {
-    return this.orderLogRepo.preload({ id, ...updateOrderLogDto });
+  async update(id: number, updateOrderLogDto: UpdateOrderLogDto) {
+    const updateOderLogs = await this.orderLogRepo.preload({
+      id,
+      ...updateOrderLogDto,
+    });
+    if (!updateOderLogs) {
+      throw new NotFoundException(`Id ${id} not found`);
+    }
+    return this.orderLogRepo.save(updateOderLogs);
   }
 
   remove(id: number) {

@@ -35,4 +35,18 @@ export class MailService {
       },
     });
   }
+
+   async sendAdminMail(admin: Admin) {
+    const url = `${process.env.API_HOST}/api/admin/activate/${admin.active_link}`;
+
+    await this.mailerService.sendMail({
+      to: admin.email,
+      subject: "Welcome to Uzex birja!",
+      template: "./confirmation",
+      context: {
+        name: admin.fullName,
+        url,
+      },
+    });
+  }
 }

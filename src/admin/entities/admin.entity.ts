@@ -1,6 +1,18 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { AdminReview } from '../../amin_reviws/entities/admin_reviw.entity';
+
+export enum AdminRole {
+  SUPPERADMIN = 'supperadmin',
+  ADMIN = 'admin',
+}
 
 @ObjectType()
 @Entity()
@@ -35,6 +47,15 @@ export class Admin {
   @Column({ default: false })
   is_creator: string;
 
+  @ApiProperty({
+    example: AdminRole.ADMIN,
+    enum: AdminRole,
+    description: 'Admin role',
+  })
+  @Field()
+  @Column({ type: 'enum', enum: AdminRole, default: AdminRole.ADMIN })
+  role: boolean;
+
   @ApiProperty()
   @Field()
   @Column({ nullable: true })
@@ -49,4 +70,17 @@ export class Admin {
   @Field()
   @Column()
   phone: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  @ApiProperty({
+    example: 'some-uuid-activation-link',
+    description: 'Activation link',
+    required: false,
+  })
+  active_link?: string;
+
+  @OneToMany((type) => AdminReview, (adminreview) => adminreview.admin_id)
+  @Field((type) => [AdminReview])
+  adminreviews: AdminReview[];
 }

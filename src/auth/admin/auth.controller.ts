@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -53,6 +54,7 @@ export class AuthAdminController {
     return this.authService.signInAdmin(signInDto, res);
   }
 
+  @HttpCode(200)
   @Post('sign-out')
   @UseGuards() // JwtGuardni shu yerga yozing agar bor bo'lsa
   @ApiOperation({ summary: 'Admin tizimdan chiqishi' })

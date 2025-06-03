@@ -55,10 +55,10 @@ export class CreateUserDto {
   mfo: string;
 
   // Agar kerak bo‘lsa, ushbu maydonlarni ham qo‘shishingiz mumkin:
-  // @ApiProperty({ example: true })
-  // @Field()
-  // @IsString()
-  // is_active: boolean;
+  @ApiProperty({ example: true })
+  @Field()
+  @IsString()
+  is_active: boolean;
 
   // @ApiProperty({ example: 'user' })
   // @Field()

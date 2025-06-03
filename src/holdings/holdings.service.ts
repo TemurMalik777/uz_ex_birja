@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHoldingDto } from './dto/create-holding.dto';
 import { UpdateHoldingDto } from './dto/update-holding.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Holding } from './entities/holding.entity';
 import { Repository } from 'typeorm';
+import { ID } from '@nestjs/graphql';
 
 @Injectable()
 export class HoldingsService {
@@ -21,11 +22,21 @@ export class HoldingsService {
   }
 
   findOne(id: number) {
-    return this.holdingRepo.findOneBy({ id });
+    return this.holdingRepo.findOne({
+      where: { id },
+      relations: ['supplier', 'order_id'],
+    });
   }
 
-  update(id: number, updateHoldingDto: UpdateHoldingDto) {
-    return this.holdingRepo.preload({ id, ...updateHoldingDto });
+  async update(id: number, updateHoldingDto: UpdateHoldingDto) {
+    const updateHolding = await this.holdingRepo.preload({
+      id,
+      ...updateHoldingDto,
+    });
+    if (!updateHolding) {
+      throw new NotFoundException(`xato ID ${id}`);
+    }
+    return this.holdingRepo.save(updateHolding);
   }
 
   remove(id: number) {

@@ -7,10 +7,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { Wallet } from '../../wallets/entities/wallet.entity';
 import { Holding } from '../../holdings/entities/holding.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { Complaint } from '../../complaints/entities/complaint.entity';
+import { ContactMessage } from '../../contact_messages/entities/contact_message.entity';
+import { Audit } from '../../audits/entities/audit.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Session } from '../../sessions/entities/session.entity';
+// import { Session } from 'inspector/promises';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -76,7 +81,10 @@ export class User {
 
   @Field()
   @Column({ default: false })
-  @ApiProperty({ example: false, description: 'Is user active?' })
+  @ApiProperty({
+    example: false,
+    description: 'Is user active?',
+  })
   is_active: boolean;
 
   @Field()
@@ -109,7 +117,32 @@ export class User {
   @Field((type) => [Holding])
   holdings: Holding[];
 
-  @OneToMany((type)=>Order, (order)=>order.client_id)
-  @Field((type)=>[Order])
-  orders: Order[]
+  @OneToMany((type) => Order, (order) => order.client_id)
+  @Field((type) => [Order])
+  orders: Order[];
+
+  @OneToMany((type) => Complaint, (complaint) => complaint.complainant_id)
+  @Field((type) => [Complaint])
+  complaints: Complaint[];
+
+  @OneToMany((type) => ContactMessage, (contactmessag) => contactmessag.user_id)
+  @Field((type) => [ContactMessage])
+  contactmessags: ContactMessage[];
+
+  @OneToMany((type) => Audit, (audit) => audit.user_id)
+  @Field((type) => [Audit])
+  audtis: Audit[];
+
+  @OneToMany((type) => Product, (product) => product.supplier_id)
+  @Field((type) => [Product])
+  products: Product[];
+
+  @OneToMany(() => Session, (sessions) => sessions.user, { cascade: true })
+  sessions: Session[];
+
+  @OneToMany(
+    () => Complaint,
+    (complaint_user) => complaint_user.against_user_id,
+  )
+  complaint_user: Complaint[];
 }

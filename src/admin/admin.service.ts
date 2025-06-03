@@ -32,7 +32,6 @@ export class AdminService {
       hashed_password,
       refresh_token: '',
     });
-
     return newAdmin;
   }
 
@@ -43,6 +42,10 @@ export class AdminService {
   async findAdminByEmail(email: string) {
     const admin = await this.adminRepo.findOne({ where: { email } });
     return admin;
+  }
+
+  async findAdminByActivationLink(link: string) {
+    return await this.adminRepo.findOne({ where: { active_link: link } });
   }
 
   findOne(id: number) {
@@ -88,7 +91,10 @@ export class AdminService {
     const admins = await this.adminRepo.find();
 
     for (const admin of admins) {
-      const match = await bcrypt.compare(refresh_token, admin.refresh_token || '');
+      const match = await bcrypt.compare(
+        refresh_token,
+        admin.refresh_token || '',
+      );
       if (match) return admin;
     }
 
@@ -98,5 +104,35 @@ export class AdminService {
   async updateRefreshToken(id: number, refresh_token: string) {
     await this.adminRepo.update(id, { refresh_token });
     return { message: 'Refresh token updated successfully' };
+  }
+
+  // async findAdminByActivationLink(link: string): Promise<User | null> {
+  //   return await this.userRepo.findOne({ where: { active_link: link } });
+  // }
+
+  async activate(link: string) {
+    if (!link) {
+      throw new BadRequestException('Activation link jo‘natilmadi!');
+    }
+
+    const admin = await this.adminRepo.findOne({ where: { active_link: link } });
+
+    if (!admin) {
+      throw new NotFoundException('Aktivatsiya linki notogri!');
+    }
+
+    if (admin.is_active) {
+      throw new BadRequestException('Allaqachon faollashtirilgan');
+    }
+
+    admin.is_active = "true";
+    admin.active_link = ''; // linkni bekor qilish
+
+    await this.adminRepo.save(admin);
+
+    return {
+      message: 'Profil muvaffaqiyatli faollashtirildi',
+      is_active: admin.is_active,
+    };
   }
 }

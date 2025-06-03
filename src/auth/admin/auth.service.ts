@@ -1,10 +1,17 @@
-import { BadGatewayException, BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AdminService } from '../../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 import { Admin } from '../../admin/entities/admin.entity';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { SignInDto } from '../dto/sing-in.dto';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { Response, Request } from 'express';
 
 @Injectable()
@@ -17,7 +24,7 @@ export class AdminAuthService {
   async AdmingenerateToken(admin: Admin) {
     const payload = {
       id: admin.id,
-      email: admin.email,
+      role: admin.role,
       is_active: admin.is_active,
       is_creator: admin.is_creator,
     };
@@ -36,7 +43,7 @@ export class AdminAuthService {
       refreshToken,
     };
   }
-  
+
   async signUpAdmin(createAdminDto: CreateAdminDto) {
     const candidate = await this.adminService.findAdminByEmail(
       createAdminDto.email,

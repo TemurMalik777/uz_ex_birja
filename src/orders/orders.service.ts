@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,15 +16,22 @@ export class OrdersService {
   }
 
   findAll() {
-    return this.orderRepo.find({relations: ['client_id']});
+    return this.orderRepo.find({ relations: ['client_id'] });
   }
 
   findOne(id: number) {
     return this.orderRepo.findOneBy({ id });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return this.orderRepo.preload({ id, ...updateOrderDto });
+  async update(id: number, updateOrderDto: UpdateOrderDto) {
+    const updateOrders = await this.orderRepo.preload({
+      id,
+      ...updateOrderDto,
+    });
+    if (!updateOrders) {
+      throw new NotFoundException('Id Topilmadi');
+    }
+    return this.orderRepo.save(updateOrders);
   }
 
   remove(id: number) {

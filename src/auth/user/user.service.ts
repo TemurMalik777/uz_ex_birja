@@ -25,6 +25,7 @@ export class AuthUserService {
     const payload = {
       id: user.id,
       email: user.email,
+      role: user.role,
       is_active: user.is_active,
     };
     const [accessToken, refreshToken] = await Promise.all([

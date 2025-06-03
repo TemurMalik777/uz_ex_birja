@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateComplaintDto } from './dto/create-complaint.dto';
 import { UpdateComplaintDto } from './dto/update-complaint.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Complaint } from './entities/complaint.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ComplaintsService {
+  constructor(
+    @InjectRepository(Complaint)
+    private readonly complaintRepo: Repository<Complaint>,
+  ) {}
+
   create(createComplaintDto: CreateComplaintDto) {
-    return 'This action adds a new complaint';
+    return this.complaintRepo.save(createComplaintDto);
   }
 
   findAll() {
-    return `This action returns all complaints`;
+    return this.complaintRepo.find({
+      relations: ['complainant_id', 'against_user_id', 'product_id'],
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} complaint`;
+    return this.complaintRepo.findOne({
+      where: { id },
+      relations: ['complainant_id', 'against_user_id', 'product_id'],
+    });
   }
 
-  update(id: number, updateComplaintDto: UpdateComplaintDto) {
-    return `This action updates a #${id} complaint`;
+  async update(id: number, updateComplaintDto: UpdateComplaintDto) {
+    const updateComplaint = await this.complaintRepo.preload({
+      id,
+      ...updateComplaintDto,
+    });
+    if (!updateComplaint) {
+      throw new NotFoundException(`Complaints with Id  ${id} not found`);
+    }
+    return this.complaintRepo.save(updateComplaint);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} complaint`;
+    return this.complaintRepo.delete({ id });
   }
 }

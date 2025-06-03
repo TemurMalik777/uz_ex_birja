@@ -22,34 +22,38 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { password, confirm_password, ...otherDto } = createUserDto;
+    const { password, confirm_password, email, ...otherDto } = createUserDto;
 
     if (password !== confirm_password) {
       throw new BadRequestException('Parollar mos emas!');
     }
 
+    // Email bazada borligini tekshirish
+    const candidate = await this.userRepo.findOne({ where: { email } });
+    if (candidate) {
+      throw new BadRequestException("Bu email allaqachon ro'yxatdan o'tgan!");
+    }
+
     const hashed_password = await bcrypt.hash(password, 7);
 
-    // 1. Aktivatsiya linki yaratish
     const activationLink = uuidv4();
 
-    // 2. Yangi user yaratish
-    const newUserWhitHasPasword = await this.userRepo.save({
+    const newUserWithHashedPassword = await this.userRepo.save({
       ...otherDto,
+      email, // emailni ham qo'shishni unutmang
       password: hashed_password,
       is_active: false,
       active_link: activationLink,
     });
 
-    // 3. Email yuborish
     try {
-      await this.mailService.sendUserMail(newUserWhitHasPasword);
+      await this.mailService.sendUserMail(newUserWithHashedPassword);
     } catch (error) {
       console.error('Email yuborishda xatolik:', error.message);
       throw new ServiceUnavailableException('Emailga xat yuborishda xatolik');
     }
 
-    return newUserWhitHasPasword;
+    return newUserWithHashedPassword;
   }
 
   findAll() {
@@ -64,8 +68,14 @@ export class UsersService {
     return this.userRepo.findOneBy({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepo.preload({id, ...updateUserDto});
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const updateUser = await this.userRepo.preload({ id, ...updateUserDto });
+
+    if (!updateUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.userRepo.save(updateUser);
   }
 
   remove(id: number) {

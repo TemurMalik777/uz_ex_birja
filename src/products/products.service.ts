@@ -12,6 +12,34 @@ export class ProductsService {
     private readonly productRepo: Repository<Product>,
   ) {}
 
+  //=================Query================
+  async getCheapestProducts() {
+    return this.productRepo
+      .createQueryBuilder('product')
+      .leftJoin('product.product_param', 'param')
+      .leftJoin('product.product_bids', 'bid')
+      .leftJoin('param.product_category', 'category')
+      .leftJoin('product.supplier', 'supplier')
+      .leftJoin('product.product_images', 'images')
+      .where('bid.bid_price IS NOT NULL')
+      .select([
+        'product.id AS product_id',
+        'param."Product (work/service)" AS name',
+        'param.price_per_unit AS unit_price',
+        'category.name AS category_name',
+        'supplier.company_name AS supplier',
+        'images.image_url AS image',
+        'MIN(bid.bid_price) AS min_price',
+      ])
+      .groupBy(
+        'product.id, param.id, category.name, supplier.company_name, images.image_url',
+      )
+      .orderBy('min_price', 'ASC')
+      .limit(10)
+      .getRawMany();
+  }
+  //=========================================
+
   create(createProductDto: CreateProductDto) {
     return this.productRepo.save(createProductDto);
   }

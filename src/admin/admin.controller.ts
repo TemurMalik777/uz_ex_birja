@@ -24,13 +24,15 @@ import { Admin } from './entities/admin.entity'; // Agar Admin entity mavjud bo'
 import { AuthGuard } from '../common/guard/auth.guard';
 import { SupperAdminGuard } from '../common/guard/supperAmin.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
+import { SelfAdminGuard } from '../common/guard/selfadmin.guard';
 
-@ApiBearerAuth()
+
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, SupperAdminGuard)
   @Post()
   @ApiOperation({ summary: 'Yangi admin yaratish' })
@@ -67,7 +69,7 @@ export class AdminController {
     return { message: 'Profil muvaffaqiyatli faollashtirildi!' };
   }
 
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AdminGuard, SelfAdminGuard)
   @Get(':id')
   @ApiOperation({ summary: "ID bo'yicha adminni olish" })
   @ApiParam({ name: 'id', description: 'Admin ID', type: Number })
@@ -77,7 +79,7 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AdminGuard, SelfAdminGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Adminni yangilash' })
   @ApiParam({

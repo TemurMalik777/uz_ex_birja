@@ -13,16 +13,16 @@ async function start() {
     // Logger.overrideLogger(false);
 
     const PORT = process.env.PORT || 3030;
-    const app = await NestFactory.create(AppModule,{
+    const app = await NestFactory.create(AppModule, {
       logger: WinstonModule.createLogger(winstonConfig),
       // logger: ['error', 'log']
       // logger: new ConsoleLogger({
       //   colors: true,
-      //   prefix: "PrismaJon", 
+      //   prefix: "PrismaJon",
       //   json: true
       // })
     });
-    app.useGlobalFilters(new AllExceptionFilter(app.get('winston')))
+    app.useGlobalFilters(new AllExceptionFilter(app.get('winston')));
 
     app.setGlobalPrefix('api');
     app.use(cookieParser());
@@ -33,7 +33,18 @@ async function start() {
       .setVersion('1.0')
       .addTag('NestJS')
       .addTag('Guard')
-      .addBearerAuth()
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT',
+          description: 'Tokenni shu yerga yozing',
+          in: 'header',
+        },
+        'access-token', // key bu nomda bo'ladi
+      )
+
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

@@ -58,7 +58,7 @@ export class CreateUserDto {
   @ApiProperty({ example: true })
   @Field()
   @IsString()
-  is_active: boolean;
+  is_active: string;
 
   // @ApiProperty({ example: 'user' })
   // @Field()

@@ -42,7 +42,7 @@ export class UsersService {
       ...otherDto,
       email, // emailni ham qo'shishni unutmang
       password: hashed_password,
-      is_active: false,
+      is_active: "false",
       active_link: activationLink,
     });
 
@@ -124,7 +124,7 @@ export class UsersService {
       throw new BadRequestException('Allaqachon faollashtirilgan');
     }
 
-    user.is_active = true;
+    user.is_active = 'true';
     user.active_link = ''; // linkni bekor qilish
 
     await this.userRepo.save(user);

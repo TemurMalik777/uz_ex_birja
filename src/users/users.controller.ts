@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,12 +15,17 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '../common/guard/auth.guard';
+import { AdminGuard } from '../common/guard/admin.guard';
+import { UserAccessGuard } from '../common/guard/clieant-supplier.guard';
 
+@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -37,6 +43,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard, AdminGuard)
   @Get()
   @ApiOperation({ summary: 'Barcha foydalanuvchilarni olish' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchilar ro‘yxati.' })
@@ -59,13 +66,14 @@ export class UsersController {
       throw new NotFoundException('Aktivatsiya linki notogri!');
     }
 
-    user.is_active = true;
+    user.is_active = 'true';
     user.active_link = '';
     await this.usersService.update(user.id, user);
 
     return { message: 'Profil muvaffaqiyatli faollashtirildi!' };
   }
 
+  @UseGuards(AuthGuard, UserAccessGuard)
   @Get(':id')
   @ApiOperation({ summary: 'ID bo‘yicha foydalanuvchini olish' })
   @ApiParam({ name: 'id', description: 'Foydalanuvchi ID' })
@@ -75,6 +83,7 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, UserAccessGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Foydalanuvchini yangilash' })
   @ApiParam({ name: 'id', description: 'Yangilanadigan foydalanuvchi ID' })
@@ -85,6 +94,7 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
+  @UseGuards(AuthGuard, UserAccessGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Foydalanuvchini o‘chirish' })
   @ApiParam({

@@ -26,18 +26,17 @@ export class AdminGuard implements CanActivate {
 
     // Faqat admin rolega ruxsat
     if (user.role !== 'admin') {
-         console.log("aaaaaaaaaaa",user.role);
       throw new ForbiddenException({
         message: 'Siz admin emassiz',
       });
     }
 
-    // Oddiy admin (false) o‘zining ma’lumotini ko‘rishi mumkin
-    if (user.is_creator === 'false' && user.id !== +paramId) {
-      throw new ForbiddenException({
-        message: "Siz faqat o'z ma'lumotlaringizni ko'rishingiz mumkin",
-      });
-    }
+    // // Oddiy admin (false) o‘zining ma’lumotini ko‘rishi mumkin
+    // if (user.is_creator === 'false' && user.id !== +paramId) {
+    //   throw new ForbiddenException({
+    //     message: "Siz faqat o'z ma'lumotlaringizni ko'rishingiz mumkin",
+    //   });
+    // }
 
     return true;
   }

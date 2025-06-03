@@ -23,6 +23,7 @@ import { ProductBidsModule } from './product_bids/product_bids.module';
 import { ProductsParamModule } from './products_param/products_param.module';
 import { ProductImagesModule } from './product_images/product_images.module';
 import { ProductCategoryModule } from './product_category/product_category.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { ProductCategoryModule } from './product_category/product_category.modul
     ProductsParamModule,
     ProductImagesModule,
     ProductCategoryModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [],

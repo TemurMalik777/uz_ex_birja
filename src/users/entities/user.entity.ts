@@ -85,7 +85,7 @@ export class User {
     example: false,
     description: 'Is user active?',
   })
-  is_active: boolean;
+  is_active: string;
 
   @Field()
   @Column({

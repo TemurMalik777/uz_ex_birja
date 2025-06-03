@@ -17,3 +17,4 @@ import { ProductBid } from '../product_bids/entities/product_bid.entity';
   controllers: [SearchController],
 })
 export class SearchModule {}
+

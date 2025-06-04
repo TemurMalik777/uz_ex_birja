@@ -13,12 +13,15 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { ComplaintsService } from './complaints.service';
 import { CreateComplaintDto } from './dto/create-complaint.dto';
 import { UpdateComplaintDto } from './dto/update-complaint.dto';
 
+
+@ApiBearerAuth('access-token')
 @ApiTags('complaints')
 @Controller('complaints')
 export class ComplaintsController {

@@ -25,7 +25,7 @@ import { AuthGuard } from '../common/guard/auth.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { UserAccessGuard } from '../common/guard/clieant-supplier.guard';
 
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @ApiTags('users')
 @Controller('users')
 export class UsersController {

@@ -10,9 +10,11 @@ import {
 import { OrderLogsService } from './order_logs.service';
 import { CreateOrderLogDto } from './dto/create-order_log.dto';
 import { UpdateOrderLogDto } from './dto/update-order_log.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBasicAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
 import { OrderLog } from './entities/order_log.entity'; // agar mavjud bo‘lsa
 
+
+@ApiBearerAuth('access-token')
 @ApiBasicAuth()
 @ApiTags('Buyurtma loglari') // Swagger tag nomi
 @Controller('order-logs')

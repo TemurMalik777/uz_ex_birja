@@ -16,10 +16,11 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Wallet } from './entities/wallet.entity'; // Agar mavjud bo‘lsa
 
+@ApiBearerAuth('access-token')
 @ApiTags('Hamyonlar')
 @Controller('wallets')
 export class WalletsController {
@@ -28,14 +29,18 @@ export class WalletsController {
   @Post()
   @ApiOperation({ summary: 'Yangi hamyon yaratish' })
   @ApiResponse({ status: 201, description: 'Hamyon yaratildi', type: Wallet })
-  @ApiResponse({ status: 400, description: 'Xato so‘rov' })
+  @ApiResponse({ status: 400, description: 'Xato sorov' })
   create(@Body() createWalletDto: CreateWalletDto, userId: User) {
     return this.walletsService.create(createWalletDto, userId);
   }
 
   @Get()
   @ApiOperation({ summary: 'Barcha hamyonlarni olish' })
-  @ApiResponse({ status: 200, description: 'Hamyonlar ro‘yxati', type: [Wallet] })
+  @ApiResponse({
+    status: 200,
+    description: 'Hamyonlar ro‘yxati',
+    type: [Wallet],
+  })
   findAll() {
     return this.walletsService.findAll();
   }

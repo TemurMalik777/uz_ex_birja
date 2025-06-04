@@ -13,18 +13,26 @@ export class WalletsService {
   ) {}
 
   async create(createWalletDto: CreateWalletDto, user: User) {
-    const newWallet = this.walletRepo.create({ ...createWalletDto, userId: user.id });
-    return await this.walletRepo.save(newWallet);
+    // console.log("aaaaaa", user);
+    // if (!user) {
+    //   throw new Error('User is not defined');
+    // }
+    // const newWallet = this.walletRepo.create({
+    //   ...createWalletDto,
+    //   userId: user.id,
+    // });
+    
+    return await this.walletRepo.save(createWalletDto);
   }
 
   findAll() {
-    return this.walletRepo.find({relations: ["userId"]});
+    return this.walletRepo.find({ relations: ['userId'] });
   }
 
   findOne(id: number) {
     return this.walletRepo.findOne({
       where: { id },
-      relations: ["userId"],
+      relations: ['userId'],
     });
   }
 

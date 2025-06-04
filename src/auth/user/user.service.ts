@@ -58,16 +58,24 @@ export class AuthUserService {
     console.log('email:', singInDto.email);
 
     if (!user) {
-      throw new BadRequestException('Email yoki passwor hato');
+      throw new BadRequestException('Email yoki parol noto‘g‘ri');
     }
+
     const isValidPassword = await bcrypt.compare(
       singInDto.password,
       user.password,
     );
 
     if (!isValidPassword) {
-      throw new BadRequestException('Email yoki passwor hato p ');
+      throw new BadRequestException('Email yoki parol noto‘g‘ri');
     }
+
+    if (user.is_active !== 'true') {
+      throw new BadRequestException(
+        'Iltimos, akkauntingizni aktivatsiya qiling',
+      );
+    }
+
     const tokens = await this.UsergenerateToken(user);
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
@@ -79,7 +87,7 @@ export class AuthUserService {
       user.refresh_token = hashed_refresh_token;
       await this.userService.update(user.id, user);
     } catch (error) {
-      console.log('Token da xatolik !?!');
+      console.log('Token saqlashda xatolik yuz berdi');
     }
 
     return {

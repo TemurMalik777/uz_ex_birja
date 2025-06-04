@@ -56,15 +56,18 @@ export class Admin {
   @Column({ type: 'enum', enum: AdminRole, default: AdminRole.ADMIN })
   role: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'false',
+    description: 'Faqat "true" yoki "false" bo‘lishi mumkin',
+  })
   @Field()
-  @Column({ nullable: true })
-  is_active?: string;
+  @Column({ nullable: true, default: 'true' })  // Bazada default 'true'
+  is_active: string;
 
   @ApiProperty({ example: 'some-refresh-token', required: false })
   @Field()
   @Column()
-  refresh_token?: string;
+  refresh_token: string;
 
   @ApiProperty({ example: '+998901234567' })
   @Field()

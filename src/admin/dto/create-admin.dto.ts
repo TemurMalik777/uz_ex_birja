@@ -49,14 +49,14 @@ export class CreateAdminDto {
   @IsBooleanString()
   is_creator: string;
 
-  // @ApiProperty({
-  //   example: 'false',
-  //   description: 'Faqat "true" yoki "false" bo‘lishi mumkin',
-  // })
-  // @Field({ nullable: true })
-  // @IsNotEmpty()
-  // @IsBooleanString()
-  // is_active?: string;
+  @ApiProperty({
+    example: 'false',
+    description: 'Faqat "true" yoki "false" bo‘lishi mumkin',
+  })
+  @Field()
+  @IsNotEmpty()
+  @IsBooleanString()
+  is_active: string;
 
   @ApiProperty({ example: null, required: false })
   @Field()

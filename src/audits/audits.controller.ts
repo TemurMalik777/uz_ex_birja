@@ -10,9 +10,11 @@ import {
 import { AuditsService } from './audits.service';
 import { CreateAuditDto } from './dto/create-audit.dto';
 import { UpdateAuditDto } from './dto/update-audit.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { Audit } from './entities/audit.entity';
 
+
+@ApiBearerAuth('access-token')
 @ApiTags('Auditlar')
 @Controller('audits')
 export class AuditsController {

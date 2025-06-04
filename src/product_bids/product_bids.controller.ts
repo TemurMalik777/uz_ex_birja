@@ -16,10 +16,11 @@ import {
   ApiResponse,
   ApiParam,
   ApiBasicAuth,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ProductBid } from './entities/product_bid.entity'; // bo‘lsa
 
-@ApiBasicAuth()
+@ApiBearerAuth('access-token')
 @ApiTags('Mahsulot Takliflari') // Swaggerdagi kategoriya nomi
 @Controller('product-bids')
 export class ProductBidsController {

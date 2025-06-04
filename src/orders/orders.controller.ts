@@ -16,9 +16,11 @@ import {
   ApiResponse,
   ApiParam,
   ApiBasicAuth,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Order } from './entities/order.entity'; // agar mavjud bo‘lsa
 
+@ApiBearerAuth('access-token')
 @ApiBasicAuth()
 @ApiTags('Buyurtmalar') // Swagger'dagi kategoriya nomi
 @Controller('orders')
@@ -35,7 +37,11 @@ export class OrdersController {
 
   @Get()
   @ApiOperation({ summary: 'Barcha buyurtmalarni olish' })
-  @ApiResponse({ status: 200, description: 'Buyurtmalar ro‘yxati', type: [Order] })
+  @ApiResponse({
+    status: 200,
+    description: 'Buyurtmalar ro‘yxati',
+    type: [Order],
+  })
   findAll() {
     return this.ordersService.findAll();
   }

@@ -26,13 +26,12 @@ import { SupperAdminGuard } from '../common/guard/supperAmin.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { SelfAdminGuard } from '../common/guard/selfadmin.guard';
 
-
+@ApiBearerAuth('access-token')
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @ApiBearerAuth()
   @UseGuards(AuthGuard, SupperAdminGuard)
   @Post()
   @ApiOperation({ summary: 'Yangi admin yaratish' })

@@ -15,9 +15,11 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ProductsParam } from './entities/products_param.entity'; // agar mavjud bo‘lsa
 
+@ApiBearerAuth('access-token')
 @ApiTags('Mahsulot Parametrlari')
 @Controller('products-param')
 export class ProductsParamController {

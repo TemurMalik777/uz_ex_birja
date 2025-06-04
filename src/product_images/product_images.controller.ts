@@ -15,9 +15,11 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ProductImage } from './entities/product_image.entity'; // bo'lsa
 
+@ApiBearerAuth('access-token')
 @ApiTags('Mahsulot rasmlari')
 @Controller('product-images')
 export class ProductImagesController {

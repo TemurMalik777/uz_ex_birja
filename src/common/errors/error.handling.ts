@@ -36,13 +36,13 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     // Stackni olish va logga qo‘shmaslik
-    // this.logger.error({
-    //   message: 'Unhandled Exception',
-    //   status,
-    //   errorMessage: message,
-    //   path: request.url,
-    //   timestamp: new Date().toISOString(),
-    // });
+    this.logger.error({
+      message: 'Unhandled Exception',
+      status,
+      errorMessage: message,
+      path: request.url,
+      timestamp: new Date().toISOString(),
+    });
 
     // Clientga minimal javob
     response.status(status).json({

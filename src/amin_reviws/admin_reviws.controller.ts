@@ -10,8 +10,9 @@ import {
 import { CreateAdminReviewDto } from './dto/create-admin_reviw.dto';
 import { AdminReviwsService } from './admin_reviws.service';
 import { UpdateAdminReviwDto } from './dto/update-admin_reviw.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @Controller('amin-reviws')
 export class AdminReviwsController {
   constructor(private readonly aminReviwsService: AdminReviwsService) {}

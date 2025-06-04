@@ -10,9 +10,10 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { Product } from './entities/product.entity'; // bo‘lsa
 
+@ApiBearerAuth('access-token')
 @ApiTags('Mahsulotlar')
 @Controller('products')
 export class ProductsController {

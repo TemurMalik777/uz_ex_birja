@@ -19,19 +19,26 @@ export class AdminService {
   ) {}
 
   async create(createAdminDto: CreateAdminDto) {
-    const { password, confirm_password, ...otherDto } = createAdminDto;
+    const { password, confirm_password, email, ...otherDto } = createAdminDto;
 
     if (password !== confirm_password) {
       throw new BadRequestException('Password does not match!');
+    }
+
+    const existingAdmin = await this.adminRepo.findOne({ where: { email } });
+    if (existingAdmin) {
+      throw new BadRequestException('Bunday email allaqachon mavjud!');
     }
 
     const hashed_password = await bcrypt.hash(password, 7);
 
     const newAdmin = await this.adminRepo.save({
       ...otherDto,
+      email,
       hashed_password,
       refresh_token: '',
     });
+
     return newAdmin;
   }
 
@@ -115,7 +122,9 @@ export class AdminService {
       throw new BadRequestException('Activation link jo‘natilmadi!');
     }
 
-    const admin = await this.adminRepo.findOne({ where: { active_link: link } });
+    const admin = await this.adminRepo.findOne({
+      where: { active_link: link },
+    });
 
     if (!admin) {
       throw new NotFoundException('Aktivatsiya linki notogri!');
@@ -125,7 +134,7 @@ export class AdminService {
       throw new BadRequestException('Allaqachon faollashtirilgan');
     }
 
-    admin.is_active = "true";
+    admin.is_active = 'true';
     admin.active_link = ''; // linkni bekor qilish
 
     await this.adminRepo.save(admin);

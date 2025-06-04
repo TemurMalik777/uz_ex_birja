@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger, Logger } from '@nestjs/common';
+import { BadRequestException, ConsoleLogger, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { winstonConfig } from './common/logger/winston.logger';
@@ -9,16 +9,14 @@ import { AllExceptionFilter } from './common/errors/error.handling';
 
 async function start() {
   try {
-    // NestJS loglarini o'chirib qo'yish
-    // Logger.overrideLogger(false);
-
     const PORT = process.env.PORT || 3030;
     const app = await NestFactory.create(AppModule, {
-      logger: WinstonModule.createLogger(winstonConfig),
+      logger: false,
+      // logger: WinstonModule.createLogger(winstonConfig),
       // logger: ['error', 'log']
       // logger: new ConsoleLogger({
       //   colors: true,
-      //   prefix: "PrismaJon",
+      //   prefix: "Uzex",
       //   json: true
       // })
     });
@@ -28,8 +26,8 @@ async function start() {
     app.use(cookieParser());
 
     const config = new DocumentBuilder()
-      .setTitle('Nest-One project')
-      .setDescription('NEST-ONE REST API')
+      .setTitle('UzEx birja project')
+      .setDescription('UZEX BERJA API')
       .setVersion('1.0')
       .addTag('NestJS')
       .addTag('Guard')
@@ -46,6 +44,28 @@ async function start() {
       )
 
       .build();
+
+    app.enableCors({
+      origin: (origin, callback) => {
+        const allowedOrigin = [
+          'http://localhost:3004',
+          'http://localhost:8000',
+          'http://localhost:3000',
+          'http://localhost:3001', 
+          'http://localhost:3333',
+          'http://smartnavbat.uz',
+          'http://smart.navbat.uz',
+          'http://smart.navbat.app',
+        ];
+        if (!origin || allowedOrigin.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new BadRequestException('Not allowed by CORS'));
+        }
+      },
+      methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+      credentials: true,
+    });
 
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);

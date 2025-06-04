@@ -10,9 +10,11 @@ import {
 import { ContactMessagesService } from './contact_messages.service';
 import { CreateContactMessageDto } from './dto/create-contact_message.dto';
 import { UpdateContactMessageDto } from './dto/update-contact_message.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { ContactMessage } from './entities/contact_message.entity';
 
+
+@ApiBearerAuth('access-token')
 @ApiTags('Contact Messages')
 @Controller('contact-messages')
 export class ContactMessagesController {

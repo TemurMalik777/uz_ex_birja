@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
+import { UpdateUserPasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,7 @@ export class UsersService {
       ...otherDto,
       email, // emailni ham qo'shishni unutmang
       password: hashed_password,
-      is_active: "false",
+      is_active: 'false',
       active_link: activationLink,
     });
 
@@ -133,5 +134,30 @@ export class UsersService {
       message: 'Profil muvaffaqiyatli faollashtirildi',
       is_active: user.is_active,
     };
+  }
+
+  async updatePassword(
+    id: number,
+    dto: UpdateUserPasswordDto,
+  ): Promise<string> {
+    const user = await this.userRepo.findOne({ where: { id } });
+
+    if (!user) throw new NotFoundException('Foydalanuvchi topilmadi');
+
+    const isMatch = await bcrypt.compare(dto.oldpassword, user.password);
+    if (!isMatch) throw new BadRequestException("Eski parol noto'g'ri");
+
+    if (dto.newpassword !== dto.confirm_password) {
+      throw new BadRequestException(
+        'Yangi parol va tasdiqlash paroli mos emas',
+      );
+    }
+
+    const hashedNewPassword = await bcrypt.hash(dto.newpassword, 7);
+    user.password = hashedNewPassword;
+
+    await this.userRepo.save(user);
+
+    return 'Parol muvaffaqiyatli yangilandi';
   }
 }

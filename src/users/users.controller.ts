@@ -24,6 +24,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { UserAccessGuard } from '../common/guard/clieant-supplier.guard';
+import { UpdateUserPasswordDto } from './dto/update-password.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('users')
@@ -105,5 +106,26 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Foydalanuvchi topilmadi.' })
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Patch(':id/password')
+  @ApiOperation({ summary: 'Foydalanuvchi parolini yangilash' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBody({ type: UpdateUserPasswordDto })
+  @ApiResponse({ status: 200, description: 'Parol muvaffaqiyatli yangilandi' })
+  async updatePassword(
+    @Param('id') id: number,
+    @Body() dto: UpdateUserPasswordDto,
+  ): Promise<{ message: string }> {
+    const result = await this.usersService.updatePassword(id, dto);
+    return { message: result };
+  }
+
+  @Get('activate/:link')
+  @ApiOperation({ summary: 'Foydalanuvchini aktivlashtirish' })
+  @ApiParam({ name: 'link', type: String })
+  @ApiResponse({ status: 200, description: 'Foydalanuvchi aktivlashtirildi' })
+  activate(@Param('link') link: string) {
+    return this.usersService.activate(link);
   }
 }

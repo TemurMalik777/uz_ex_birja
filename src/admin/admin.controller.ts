@@ -25,6 +25,7 @@ import { AuthGuard } from '../common/guard/auth.guard';
 import { SupperAdminGuard } from '../common/guard/supperAmin.guard';
 import { AdminGuard } from '../common/guard/admin.guard';
 import { SelfAdminGuard } from '../common/guard/selfadmin.guard';
+import { UpdateAdminPasswordDto } from './dto/update-password.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('admin')
@@ -106,4 +107,25 @@ export class AdminController {
   remove(@Param('id') id: string) {
     return this.adminService.remove(+id);
   }
+
+  @Patch(':id/password')
+    @ApiOperation({ summary: 'Foydalanuvchi parolini yangilash' })
+    @ApiParam({ name: 'id', type: Number })
+    @ApiBody({ type: UpdateAdminPasswordDto })
+    @ApiResponse({ status: 200, description: 'Parol muvaffaqiyatli yangilandi' })
+    async updatePassword(
+      @Param('id') id: number,
+      @Body() dto: UpdateAdminPasswordDto,
+    ): Promise<{ message: string }> {
+      const result = await this.adminService.updatePassword(id, dto);
+      return { message: result };
+    }
+  
+    @Get('activate/:link')
+    @ApiOperation({ summary: 'Foydalanuvchini aktivlashtirish' })
+    @ApiParam({ name: 'link', type: String })
+    @ApiResponse({ status: 200, description: 'Foydalanuvchi aktivlashtirildi' })
+    activate(@Param('link') link: string) {
+      return this.adminService.activate(link);
+    }
 }

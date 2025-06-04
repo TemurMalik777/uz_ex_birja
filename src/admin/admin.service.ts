@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateAdminPasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class AdminService {
@@ -143,5 +144,30 @@ export class AdminService {
       message: 'Profil muvaffaqiyatli faollashtirildi',
       is_active: admin.is_active,
     };
+  }
+
+  async updatePassword(
+    id: number,
+    dto: UpdateAdminPasswordDto,
+  ): Promise<string> {
+    const user = await this.adminRepo.findOne({ where: { id } });
+
+    if (!user) throw new NotFoundException('Foydalanuvchi topilmadi');
+
+    const isMatch = await bcrypt.compare(dto.oldpassword, user.hashed_password);
+    if (!isMatch) throw new BadRequestException("Eski parol noto'g'ri");
+
+    if (dto.newpassword !== dto.confirm_password) {
+      throw new BadRequestException(
+        'Yangi parol va tasdiqlash paroli mos emas',
+      );
+    }
+
+    const hashedNewPassword = await bcrypt.hash(dto.newpassword, 7);
+    user.hashed_password = hashedNewPassword;
+
+    await this.adminRepo.save(user);
+
+    return 'Parol muvaffaqiyatli yangilandi';
   }
 }
